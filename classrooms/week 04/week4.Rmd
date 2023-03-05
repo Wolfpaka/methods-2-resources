@@ -21,6 +21,20 @@ $$
 # 1.4
 ```{r}
 # Simple graphing can go here..
+# Define the function
+my_function <- function(f) {
+  c <- 5/9 * f - 160/9
+  return(c)
+}
+
+# Create a sequence of values for f
+f_seq <- seq(-40, 140, by = 1)
+
+# Calculate the corresponding values of c
+c_seq <- my_function(f_seq)
+
+# Plot the graph
+plot(f_seq, c_seq, type = "l", xlab = "Fahrenheit", ylab = "Celsius")
 
 ```
 
