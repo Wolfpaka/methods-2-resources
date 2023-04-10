@@ -1,0 +1,22 @@
+---
+title: "Week8"
+author: "Christian Vejen Barnkob"
+date: "2023-03-31"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+6.4
+For the function $$f(x,y)=\frac{sin(xy)}{cos(x+y)}$$ calculate the partial derivatives
+with respect to x and y.
+
+$$\frac{\partial\ }{\partial x}\frac{sin(xy)}{cos(x+y)}=\frac{cos(x+y)\cdot cos(xy)\cdot y-sin(xy)\cdot (-sin(x+y)\cdot1)}{cos(x+y)^2}$$
+
+
+```{r}
+
+```
+

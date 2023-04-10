@@ -134,7 +134,7 @@ h(x, y)=\frac{x^2+y}{e^x+y}
 $$
 This function is differentiable as its derivative exists in every point.
 
-## Determine the gradients of the following functions
+## Determine the gradients of the following functions (kommet her til)
 $$
 f(x, y)=10 x^2+e^y
 $$
