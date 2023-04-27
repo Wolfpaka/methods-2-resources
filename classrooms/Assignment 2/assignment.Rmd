@@ -112,4 +112,7 @@ Using these definitions, show that
     \dfdx \cos(x) &= -\sin(x).
 \end{align*}
 
+
+If $\frac{d}{dx}exp(x)=exp(x) \Rightarrow exp(x)-  \frac{d}{dx}exp(x)=0$
+
 You can either [use LaTeX](https://www.overleaf.com/learn/latex/Learn_LaTeX_in_30_minutes) or include photos of your (nicely) handwritten equations in the notebook. In any case, write down all intermediate steps.

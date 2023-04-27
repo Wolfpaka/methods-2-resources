@@ -188,67 +188,21 @@ repeat{
   if (x > 5) break("X limit reached")
 }
 ```
-
   c) Check if the they are indeed minimums using the second derivative rule we learned last class. 
-
 ```{r}
-f =  expression((1/200) * (x+4) * (x+3) * (x+2) * (x+1) * (x-1) * (x-2) * (x-3) * (x-4))
-D(D(f,'x'),'x')
-```
-From this long ugly expression it is incredibly hard know when the function is positive and when it is negative. Thus, I recommend that you plot it to get an overview.
-```{r}
-# From the polynomium above
-f =  expression((1/200) * (x+4) * (x+3) * (x+2) * (x+1) * (x-1) * (x-2) * (x-3) * (x-4))
+f = expression((1/200) * (x+4) * (x+3) * (x+2) * (x+1) * (x-1) * (x-2) * (x-3) * (x-4))
 
-D(D(f,'x'),'x')
-# Second order derivative is positive, thus we know it is a local minimum
-deriv_2 <- function(x){return((((((((1/200) + (1/200)) * (x + 2) + ((1/200) * (x + 3) + (1/200) * 
-    (x + 4)) + ((1/200) * (x + 3) + (1/200) * (x + 4))) * (x + 
-    1) + (((1/200) * (x + 3) + (1/200) * (x + 4)) * (x + 2) + 
-    (1/200) * (x + 4) * (x + 3)) + (((1/200) * (x + 3) + (1/200) * 
-    (x + 4)) * (x + 2) + (1/200) * (x + 4) * (x + 3))) * (x - 
-    1) + ((((1/200) * (x + 3) + (1/200) * (x + 4)) * (x + 2) + 
-    (1/200) * (x + 4) * (x + 3)) * (x + 1) + (1/200) * (x + 4) * 
-    (x + 3) * (x + 2)) + ((((1/200) * (x + 3) + (1/200) * (x + 
-    4)) * (x + 2) + (1/200) * (x + 4) * (x + 3)) * (x + 1) + 
-    (1/200) * (x + 4) * (x + 3) * (x + 2))) * (x - 2) + (((((1/200) * 
-    (x + 3) + (1/200) * (x + 4)) * (x + 2) + (1/200) * (x + 4) * 
-    (x + 3)) * (x + 1) + (1/200) * (x + 4) * (x + 3) * (x + 2)) * 
-    (x - 1) + (1/200) * (x + 4) * (x + 3) * (x + 2) * (x + 1)) + 
-    (((((1/200) * (x + 3) + (1/200) * (x + 4)) * (x + 2) + (1/200) * 
-        (x + 4) * (x + 3)) * (x + 1) + (1/200) * (x + 4) * (x + 
-        3) * (x + 2)) * (x - 1) + (1/200) * (x + 4) * (x + 3) * 
-        (x + 2) * (x + 1))) * (x - 3) + ((((((1/200) * (x + 3) + 
-    (1/200) * (x + 4)) * (x + 2) + (1/200) * (x + 4) * (x + 3)) * 
-    (x + 1) + (1/200) * (x + 4) * (x + 3) * (x + 2)) * (x - 1) + 
-    (1/200) * (x + 4) * (x + 3) * (x + 2) * (x + 1)) * (x - 2) + 
-    (1/200) * (x + 4) * (x + 3) * (x + 2) * (x + 1) * (x - 1)) + 
-    ((((((1/200) * (x + 3) + (1/200) * (x + 4)) * (x + 2) + (1/200) * 
-        (x + 4) * (x + 3)) * (x + 1) + (1/200) * (x + 4) * (x + 
-        3) * (x + 2)) * (x - 1) + (1/200) * (x + 4) * (x + 3) * 
-        (x + 2) * (x + 1)) * (x - 2) + (1/200) * (x + 4) * (x + 
-        3) * (x + 2) * (x + 1) * (x - 1))) * (x - 4) + (((((((1/200) * 
-    (x + 3) + (1/200) * (x + 4)) * (x + 2) + (1/200) * (x + 4) * 
-    (x + 3)) * (x + 1) + (1/200) * (x + 4) * (x + 3) * (x + 2)) * 
-    (x - 1) + (1/200) * (x + 4) * (x + 3) * (x + 2) * (x + 1)) * 
-    (x - 2) + (1/200) * (x + 4) * (x + 3) * (x + 2) * (x + 1) * 
-    (x - 1)) * (x - 3) + (1/200) * (x + 4) * (x + 3) * (x + 2) * 
-    (x + 1) * (x - 1) * (x - 2)) + (((((((1/200) * (x + 3) + 
-    (1/200) * (x + 4)) * (x + 2) + (1/200) * (x + 4) * (x + 3)) * 
-    (x + 1) + (1/200) * (x + 4) * (x + 3) * (x + 2)) * (x - 1) + 
-    (1/200) * (x + 4) * (x + 3) * (x + 2) * (x + 1)) * (x - 2) + 
-    (1/200) * (x + 4) * (x + 3) * (x + 2) * (x + 1) * (x - 1)) * 
-    (x - 3) + (1/200) * (x + 4) * (x + 3) * (x + 2) * (x + 1) * 
-    (x - 1) * (x - 2)))}
+f_1_d <- D(f,'x') # taking first derivative
 
-plot(x_plot, deriv_2(x_plot), type = 'l', ylim = c(-100,100), xlab = 'x', ylab = 'second order derivative')
-abline(h = 0, col = 'blue')
+f_2_d <- D(f_1_d, 'x') # Taking second derivative
+
+
+x<-c(3.67868765022314, -1.5025856011253, 1.50258560231549)
+
+eval(f_2_d)
 ```
-  
-  
-  d) Find the maximums or in other words, find the x's with maximizes f(x).
-  
-Hint2*  
+d) Find the maximums or in other words, find the x's which maximizes f(x)
+1. Find alle maximum via samme approach, som jeg fandt alle minimum tidligere.
 
 ```{r}
 # We first define our function making the output negative. 
@@ -264,22 +218,55 @@ repeat{
   x = x +1
   if (x > 5) break("X limit reached")
 }
+
+
+x_plot <- seq(-10,10, by = .05)
+#plot the function as a line (type = "l"). 
+plot(x_plot, polynomial4neg(x_plot), type = "l", ylim = c(-10,10), xlim = c(-5,5), xlab = 'x', ylab = 'f(x)')
+abline(h = 0, col = 'blue')
+
+x_plot <- seq(-10,10, by = .05)
+#plot the function as a line (type = "l"). 
+plot(x_plot, polynomial4(x_plot), type = "l", ylim = c(-10,10), xlim = c(-5,5), xlab = 'x', ylab = 'f(x)')
+abline(h = 0, col = 'blue')
 ```
 2) Using the above introduction to the linear regression using optim().
+Se video med design matrix
+
+Søg på, hvordan man laver en design matrix i R
+
+find ud af hvad x er. 
   a) Create Nx5 design matrix with the intercept and 4 different predictors. 
 ```{r}
 set.seed(101) # random seed to reproduce results
-n <- 1e2
-x1 <- rnorm(n, 20, 2) # so this is 1e2x1 predictor matrix 
-x2 <- rnorm(n, 20, 2) 
-x3 <- rnorm(n, 20, 2)
-x4 <- rnorm(n, 20, 2)
-X_matrix <- cbind(rep(1, 100), x1, x2, x3, x4)      # adding a column of 1s as intercept to the design matrix X (1e2 x 1)
+# Type of Gold
+Type <- factor(c(rep("control", times = 4), rep("Mayan", times = 4)))
+# Weights of the Gold.
+Weight_control <- rnorm(4, mean = 2.5, sd = 1)
+Weight_mutant <- rnorm(4, 3, sd = 2)
+Weight <- c(Weight_control, Weight_mutant)
+# Sizes of the Gold
+Size <- rnorm(8, mean = 4, sd = 1)
+# Age of the Gold artifact
+Age <- rnorm(8, 100, sd = 40)
+# Color
+Color <- factor(c(rep("Green", times = 2), rep("orange", times = 6)))
+
+
+DesignMatrix <- model.matrix(~Type+Weight+Age+Color)
 ```
-  
+
+
+
   b) Simulate y dependent on the design matrix. (Hint: Make y dependent on all the different predictors.) don't forget to add some error. 
+
 ```{r}
-y <- rnorm(n, mean = x1*2 + x2*3 + x3*4 + x4*5 , sd  =1 )                   # this is our outcome variable, a 1e2x1 vector
+Type_n <- ifelse(Type == "control", 0, 1)
+Color_n <- ifelse(Color == "green", 0, 1)
+error <- rnorm(8, 0, 10)
+
+y <- c(Type_n*50+Weight*100+Size*20+Age*(-3)+Color_n*(-10)+error)
+
 
 ```
 
@@ -292,101 +279,123 @@ loss_function <-function(X, y, par){
   loss <- sum((X%*%par - y)^2)
 return(loss) 
 }
-
 ```
 
   d) Use optim() to find the beta coefficients which minimizes our cost function. 
-
+  
 ```{r}
-coef <- optim(par = theta, fn = loss_function , X = X_matrix, y = y, method = "BFGS")
-coef$par
+coef <- optim(par = theta, fn = loss_function , X = DesignMatrix, y = y, method = "BFGS")
 
+coef$par
 ```
+
 
 ## Exercises from ROS chapter 6
 
 **6.2** Programming fake-data simulation: Write an R function to: (i) simulate n data points from the model, y = a + bx + error, with data points x uniformly sampled from the range (0, 100) and with errors drawn independently from the normal distribution with mean 0 and standard deviation σ; (ii) fit a linear regression to the simulated data; and (iii) make a scatter plot of the data and fitted regression line. Your function should take as arguments, a, b, n, σ, and it should return the data, print out the fitted regression, and make the plot. Check your function by trying it out on some values of a, b, n, σ.
+```{r}
+library(rstanarm)
+library(tidyverse)
+```
+
 
 ```{r}
-sim_fun <- function(a,b,n,sigma){
-  x = runif(n, 0, 100)
-  e = rnorm(n, 0, sigma)
-  y = a + b*x + e
+linear_function <- function(a, b, n, sigma) {
   
-  plot(x,y)
-  lines(x,a + b*x, type = 'l', col = 'blue')
-  return(y)
+  if (!require("rstanarm")) {
+    library("rstanarm")
+  }
+  if (!require("tidyverse")) {
+    library("tidyverse")
+  }
   
+  # step 1. simulate n 'x' values that are unifomrly distributed.
+  x <- runif(n, min = 0, max = 100)
+  # Step 2. Simulate normally distributed error with "sigma" standard deviation
+  error <- rnorm(n, mean = 0, sd = sigma)
+  # Step 3. Simulate y data points
+  y <- a + b*x + error
+  # Step 4. make a dataframe
+  data <- data.frame(y,x)
+  # Step 5. fit a linear regression to the data frame
+  model <- stan_glm(y~x, data = data)
+  # Step 6 Make a scatterplot of the data with a fitted regression line
+  plot_and_line <- plot(x, y, main = "x and y fitted with a regresion line")
+  abline(model, col = "red")
+  # Step 7 The function returns the dataframe, the fitted regression and the scatterplot
+  return(list(data = data, model = model, plot = plot_and_line))
 }
+```
 
-sim_fun(2,10,100,2)
+```{r}
+
+dmp <- linear_function(5, 2, 1000, 5)
 
 ```
+```{r}
+dmp$model
+```
+
+
 
 **6.3** Variation, uncertainty, and sample size: Repeat the example in Section 6.2, varying the number of data points, n. What happens to the parameter estimates and uncertainties when you increase the number of observations?
 
-By varying the number of datapoints in x we see that the standard deviation of the parameter estimates get lower
-```{r}
-library("rstanarm")
-x <- 1:2000
-n <- length(x)
-a <- 0.2
-b <- 0.3
-sigma <- 0.5
-y <- a + b*x + sigma*rnorm(n)
+hint 3*
+More precise parameter estimates
 
-fake <- data.frame(x, y)
-
-fit_1 <- stan_glm(y ~ x, data=fake)
-```
+**6.4** (challenging) Simulation study: Perform the previous exercise more systematically, trying out a sequence of values of n, for each simulating fake data and fitting the regression to obtain estimate and uncertainty (median and mad sd) for each parameter. Then plot each of these as a function of n and report on what you find.
 
 ```{r}
-print('coefficients')
-print(fit_1[["coefficients"]])
-print('standard errors')
-print(fit_1[["ses"]])
+a <- 5
+b <- 2
+n <- 10
+sigma <- 5
+x_median <- c()
+x_median_mad_sd <- c()
+intercept_mad_sd <- c()
+n_amount <- c()
+intercept <- c()
 
-
-```
-
-**6.4** Simulation study: Perform the previous exercise more systematically, trying out a sequence of values of n, for each simulating fake data and fitting the regression to obtain estimate and uncertainty (median and mad sd) for each parameter. Then plot each of these as a function of n and report on what you find.
-
-```{r}
-n_seq = 100
-se_intercept <- c()
-se_slope <- c()
-
-for (i in 2:n_seq){
-  print(i)
-  x <- 1:i
-  n <- length(x)
-  a <- 0.2
-  b <- 0.3
-  sigma <- 0.5
-  y <- a + b*x + sigma*rnorm(n)
-
-  fake <- data.frame(x, y)
-
-  fit_1 <- stan_glm(y ~ x, data=fake)
-  se_intercept[i] <- fit_1[["ses"]][['(Intercept)']]
-  se_slope[i] <- fit_1[["ses"]][['x']]
+for (i in 1:100) {
+  # Run function and store the result in a variable
+  result <- linear_function(a, b, n, sigma)
+  # Extract x_median from the model object
+  x_median <- append(x_median, median(result$model$coefficients["x"]))
+  x_median_mad_sd <- append(x_median_mad_sd, result$model$ses["x"])
+  n_amount <- append(n_amount, n)
+  intercept <- c(intercept, result$model$coefficients['(Intercept)'])
+  intercept_mad_sd <- c(intercept_mad_sd, result$model$ses['(Intercept)'])
+  # n increase by 10 each time
+  n <- n + 10
 }
 
+df <- tibble(n_amount, x_median, x_median_mad_sd, intercept_mad_sd, intercept)
 ```
 
 ```{r}
-n_dat <- seq(1,100,1)
-
-plot(n_dat, se_intercept, type = 'l', xlab = 'number of data points n', ylab = 'standard error of intercept')
-plot(n_dat, se_slope, type = 'l', xlab = 'number of data points n', ylab = 'standard error of slope')
+# paramter value = 2
+plot(df$n_amount, df$x_median, ylim = c(1.96,2.04), xlim = c(5,1000), xlab = 'x', ylab = 'x_median')
+abline(h = 2, col = 'blue')
+plot(df$n_amount, df$x_median_mad_sd, ylim = c(0.0,0.08), xlim = c(5,1000), xlab = 'x', ylab = 'x_median_mad_sd')
+# parameter value = 5
+plot(df$n_amount, df$intercept, ylim = c(3.0,9), xlim = c(5,1000), xlab = 'x', ylab = 'intercept')
+abline(h = 5, col = 'blue')
+plot(df$n_amount, df$intercept_mad_sd, ylim = c(0,3), xlim = c(5,1000), xlab = 'x', ylab = 'intercept_mad_sd')
 ```
 
+Estimates gets closer parameter values. Mad_sd values for both estimates lower. 
 
 
 ## Exercises from chapter 8
 
 **8.1**
-Make the two graphs: a plot of the sum of squares of residuals as a function of a, with b fixed at its least squares estimate, and  plot of the sum of the squares of residuals as a function of b, with a fixed at its least squares estimate. Confirm that the rss is indeed minimized at the least squares estimate.
+Least squares: The folder ElectionsEconomy contains the data for the example in Section 7.1.
+Load these data, type in the R function rss() from page 104, and evaluate it at several different
+values of (a, b). Make two graphs: a plot of the sum of squares of residuals as a function of "a",
+with "b" fixed at its least squares estimate given in Section 7.1, and a plot of the sum of squares of
+residuals as a function of "b", with "a" fixed at its least squares estimate. Confirm that the residual
+sum of squares is indeed minimized at the least squares estimate
+
 ```{r}
 # Loading the data
 remotes::install_github("avehtari/ROS-Examples",subdir = "rpackage")
@@ -395,8 +404,11 @@ library(rosdata)
 
 ```{r}
 # This is the elections economy data set
-hibbs
+df <- hibbs
 ```
+
+
+
 
 ```{r}
 # Defining the rss function
@@ -421,51 +433,50 @@ for (i in a){
 plot(a, rss_of_a, type = 'l', ylab = 'RSS')
 
 ```
-It seems reasonable that the minimum of RSS is around 46.3
+
+
+
+
+
+
+
 
 **8.3**
 Least absolute deviation: Repeat 8.1, but instead of calculating and minimizing the sum of
 squares of residuals, do this for the sum of absolute values of residuals. Find the (a,b) that
 minimizes the sum of absolute values of residuals, and plot the sum of absolute values of residuals
-as a function of a and of b. Compare the least squares and least absolute deviation estimates of (a,b).
+as a function of 0 and of 1. Compare the least squares and least absolute deviation estimates of (a,b).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+hint 1* Think in terms of factorization. If you are completely out of ideas use:  f <- (1/200) * (x+4) * (x+3) * (x+2) * (x+1) * (x-1) * (x-2) * (x-3) * (x-4)
+
+hint 2* Optim() always minimizes the return() so maybe switch the sign? How can max become min?
+
+hint 3* You can use the following commands to extract the coefficient estimates and their standard errors
 ```{r}
-# Defining the rss function
-rsa <- function(x,y,a,b){ # x and y are vectors, a and b are scalars
-  resid <- y - (a+b*x)
-  return(sum(abs(resid)))
-}
-
-# A plot of the sum of squares of residuals as a function of a, with b fixed at its least squares estimate
-y <- hibbs$vote
-x <- hibbs$growth
-b <- 3
-
-rsa_of_a <- c()
-
-a = seq(1, 100)
-
-for (i in a){
- rsa_of_a[i] = rsa(x,y,i,b)
-}
-
-plot(a, rsa_of_a, type = 'l', ylab = 'RSS')
+fit_1 <- stan_glm(y ~ x, data=fake)
+print('coefficients')
+print(fit_1[["coefficients"]])
+print('standard errors')
+print(fit_1[["ses"]])
 ```
-Linear visualization of a and 
-```{r}
-a = 46.3
-b = seq(1, 10, 0.1)
 
-rsa_of_b <- c()
 
-for (i in 1:length(b)){
- rsa_of_b[i] = rsa(x,y,a,b[i])
-}
 
-plot(b, rsa_of_b, type = 'l', ylab = 'RSS')
 
-```
-When using the absolute value instead of the squared value, the graph becomes more linear and the optimum is not exactly the same.
 
-hint1* Think in terms of factorization. If you are completely out of ideas use:  f <- (1/200) * (x+4) * (x+3) * (x+2) * (x+1) * (x-1) * (x-2) * (x-3) * (x-4)
-
-hint2* Optim() always minimizes the return() so maybe switch the sign? How can max become min?
