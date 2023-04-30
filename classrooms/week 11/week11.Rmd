@@ -1,0 +1,244 @@
+---
+title: "R Notebook"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+```{r}
+# Loading packages
+library(tidyverse)
+library(rstanarm)
+```
+
+# 10.1
+Regression with interactions: Simulate 100 data points from the model, $y = b_0 + b_1 \cdot x + b_2 \cdot z + b_3 \cdot x \cdot z + error$ , with a continuous predictor $x$ and a binary predictor $z$, coefficients $b = (1, 2, -1, -2)$, and errors drawn independently from a normal distribution with mean 0 and standard deviation
+3, as follows. For each data point i, first draw $z_i$, equally likely to take on the values 0 and 1.
+Then draw $x_i$ from a normal distribution with mean $z_i$ and standard deviation 1. Then draw the
+error from its normal distribution and compute $y_i$.
+```{r}
+# defining variables
+b <- c(1,2,-1,-2)
+b0 <- 1
+b1 <- 2
+b2 <- -1
+b3 <- -2
+error <- rnorm(100, mean = 0, sd = 3)
+z <- c()
+x <- c()
+y <- c()
+
+# make for loop
+for (i in 1:100){
+  # Draw z[i] from rbinom(n=1, size=1, prob=0.5) and put into z
+  z[i] <- rbinom(n=1, size=1, prob=0.5)
+  # Draw x[i] from rnorm(n=1, mean = z[i], sd = 1)
+  x[i] <- rnorm(n=1, mean = z[i], sd = 1)
+  # y[i] = b0 + b1*x[i] + b2*z[i] + b3*x[i]*z[i] + error[i]
+  y[i] = b0 + b[1]*x[i] + b[2]*z[i] + b[3]*x[i]*z[i] + error[i]
+}
+simulated_data <- tibble(y = y, x = x, z = z)
+```
+
+
+a) Display your simulated data as a graph og $y$ vs.$x$, using dots and circles for the points with $z = 0$ and 1, respectively
+
+
+```{r}
+# Create the scatter plot using ggplot2
+ggplot(simulated_data, aes(x = x, y = y, shape = factor(z))) +
+  geom_point(size = 3) +
+  scale_shape_manual(values = c(20, 1), labels = c("z = 0", "z = 1")) +
+  labs(title = "Simulated Data", x = "x", y = "y") + 
+  theme_classic()
+```
+
+
+b) Fit a regression predicting $y$ from $x$ and $z$ with no interaction. Make a graph with the data and the two parallel lines showing the fitted model
+```{r}
+set.seed(2)
+# Making data frame
+M1 <- stan_glm(y ~ x + z, data = simulated_data)
+
+# Extracting coefficient
+
+M1c <- tibble(intercept = M1$coefficients[1], x = M1$coefficients[2], z = M1$coefficients[3])
+
+```
+```{r}
+# Making ggplot with two regression lines
+ggplot(simulated_data, aes(x = x, y = y, shape = factor(z))) +
+  geom_point(size = 3) +
+  scale_shape_manual(values = c(20, 1), labels = c("z = 0", "z = 1")) +
+  labs(title = "Simulated Data", x = "x", y = "y") + 
+  theme_dark()+
+  geom_abline(aes(intercept = M1$coefficients[1]+M1$coefficients[3], slope = M1$coefficients[2]), color = "white")+
+  geom_abline(aes(intercept = M1$coefficients[1], slope = M1$coefficients[2]), color = "Black")
+  
+```
+
+c) Fit a regression predicting $y$ from $x$, $z$ and their interaction. Make a graph with the data and the two lines showing the fitted model.
+```{r}
+set.seed(1)
+# Making model
+M2 <- stan_glm(y ~ x + z + x:z, data = simulated_data)
+coef(M2)
+```
+```{r}
+# making graph
+simulated_data %>% ggplot(aes(x, y, shape = factor(z)))+
+  geom_point()+
+  scale_shape_manual(values = c(20, 1), labels = c("z = 0", "z = 1"))+
+  theme_dark()+
+  geom_abline(aes(intercept = M2$coefficients[1], slope = M2$coefficients[2]), color = "black")+
+  geom_abline(aes(intercept = M2$coefficients[1] + M2$coefficients[3], slope = M2$coefficients[2] + M2$coefficients[4]), color = "white")
+  # Adding different colors
+  
+  
+  
+
+  # Adding different regression lines 
+
+
+
+
+
+```
+```{r}
+# Extract coefficients
+b <- coef(M2)
+
+# Compute predicted y values for z = 0 and z = 1
+y_pred_z0 <- b[1] + b[2] * x + b[3] * 0 + b[4] * x * 0
+y_pred_z1 <- b[1] + b[2] * x + b[3] * 1 + b[4] * x * 1
+
+# Create the scatter plot using ggplot2
+ggplot(simulated_data, aes(x = x, y = y, shape = factor(z))) +
+  geom_point(size = 3) +
+  geom_line(aes(x = x, y = y_pred_z0, color = "blue")) +
+  geom_line(aes(x = x, y = y_pred_z1, color = "red")) +
+  scale_shape_manual(values = c(20, 1), labels = c("z = 0", "z = 1")) +
+  scale_color_manual(values = c("blue", "red"), labels = c("z = 0", "z = 1")) +
+  labs(title = "Linear Regression Model with Interaction", x = "x", y = "y") +
+  theme_classic()
+
+rm(list = ls())
+```
+
+# 10.2
+We are given the output of a linear regression with an outcome $y$, a pre-treatment predictor $x$ and a treatment indicator $z$ as well as their interaction.
+
+a) Write the equation of the estimated regression line of y on x for the treatment group, and the
+equation of the estimated regression line of y on x for the control group.
+
+Solution: We know linear regression with two predictors and their interaction has the general form
+
+$$
+y = \beta_0 + \beta_1 \cdot x + \beta_2 \cdot z + \beta_3 \cdot x \cdot z
+$$
+Inserting the median values for the $\hat\beta$-values we get
+
+$$
+y = 1.2 + 1.6 \cdot x + 2.7 \cdot z + 0.7 \cdot x \cdot z
+$$
+The regression line for the treatment group with $z = 1$ will thus be
+
+$$
+y = 1.2 + 1.6 \cdot x
+$$
+The regression line for the control group with $z = 0$ will be 
+
+$$
+y = 3.9 + 2.3 \cdot x
+$$
+
+b) Just use R to graph this exercise. Graph the two regression lines, assuming the values of x fall in the range (0, 10). On this graph also include a scatter plot of data (using open circles for treated units
+and dots for controls) that are consistent with the fitted model.
+
+
+```{r}
+# creating x values
+x <- runif(60, min=0, max=10)
+x1 <- runif(60, min=0, max=10)
+error <- rnorm(60, mean = 0, sd = 0.5)
+error2 <- rnorm(60, mean = 0, sd = 0.5)
+# creating y values when z = 0
+y_z0 <- 0.30+1.608*x+error
+y_z1 <- 3.9+2.3*x1+error2
+
+simulated_data2y <- tibble(y_z0 = y_z0, y_z1 = y_z1)
+simulated_data2y <- pivot_longer(simulated_data2y, cols=1:2, values_to = "y")
+simulated_data2x <- tibble(x = x, x1 = x1)
+simulated_data2x <- pivot_longer(simulated_data2x, cols=1:2, values_to = "x")
+simulated_data2 <- simulated_data2y %>% mutate(simulated_data2x, x = x)
+rm(simulated_data2y, simulated_data2x)
+
+```
+
+```{r}
+simulated_data2 <- simulated_data2 %>% mutate(shape = ifelse(simulated_data2$name == "x", "circle", "dots"))
+
+# graph the two regression lines, assuming the values of x fall in the range (0,10)
+simulated_data2 %>% ggplot(aes(x = x, y = y, shape = shape, color = shape))+
+  geom_point()+
+  theme_classic()+
+  scale_shape_manual(values = c("dots" = 1, "circle" = 16), labels = c("zO", "z1"))+
+  scale_color_manual(values = c("orange", "pink"), labels = c("z0", "z1"))
+  geom_abline(intercept = c(3.9, 1.2), slope = c(2.3, 1.6))
+
+# y = 3.9 + 2.3 x: treated - open circle
+# y = 1.2 + 1.6 x: control - dots
+```
+
+
+# 10.3
+In this exercise and the next, you will simulate two variables that are statistically independent of each other to see what happens when we run a regression to predict one from the other. Generate 1000 data points from a normal distribution with mean 0 and standard deviation 1 by typing var1 <- rnorm(1000,0,1) in R. Generate another variable in the same way (call it var2). Run a regression of one variable on the other. Is the slope coefficient “statistically significant”? We do not recommend summarizing regressions in this way, but it can be useful to understand how this works, given that others will do so.
+
+```{r}
+rm(list = ls())
+simulated_data <- tibble(var1 = rnorm(1000,0,1), var2 = rnorm(1000,0,1))
+
+M1 <- stan_glm(var1 ~ var2, data = simulated_data)
+
+M1lm <- lm(var1 ~ var2, data = simulated_data)
+```
+```{r}
+summary(M1)
+```
+```{r}
+model_summary <- summary(M1lm)
+
+
+```
+
+
+
+# 10.4
+Continuing the previous exercise, run a simulation repeating this process 100 times. This can be done using a loop. From each simulation, save the z-score (the estimated coefficient of var1 divided by its standard error). If the absolute value of the z-score exceeds 2, the estimate is “statistically significant.
+
+How many of these 100 z-scores exceed 2 in absolute value, thus achieving the conventional level of statistical significance?
+```{r}
+data <- c()
+for (i in 1:10000){
+  #clear tibble
+  simulated_data <- tibble()
+  # Generate values into tibble
+  simulated_data <- tibble(var1 = rnorm(1000,0,1), var2 = rnorm(1000,0,1))
+  # make linear model
+  M1 <- lm(var2~var1 , data = simulated_data)
+  # Put summary into variable
+  model_summary <- summary(M1)
+  slope <- model_summary$coefficients[2,1]
+  slope_std_error <- model_summary$coefficients[2,2]
+  # (estimated coeffiecient of var1)/standard error into coefficent
+  data[i] <- slope/slope_std_error
+}
+data <- tibble(Z = data)
+```
+
+```{r}
+data <- data %>% mutate(Significant = ifelse(abs(Z) > 2, 1, 0))
+
+sum(data$Significant)
+```
+
+
